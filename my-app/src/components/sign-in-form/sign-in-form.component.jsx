@@ -1,9 +1,10 @@
 import FormInput from "../form-input/form-input.component"
 import Button from "../button/button.component"
 import "./sign-in-form.styles.scss"
-import {useState, useContext} from 'react'
+// import {useState, useContext} from 'react'
+import {useState} from 'react'
 import {signInWithGooglePopup, createUserDocumentFromAuth, signInAuthUserWithEmailAndPassword} from "../../utils/firebase/firebase.utils"
-import {UserContext} from "../../contexts/user.context"
+// import {UserContext} from "../../contexts/user.context"
 
 
 const defaultFormFields = {
@@ -12,19 +13,24 @@ const defaultFormFields = {
 }
 
 
+//const {setCurrentUser} = useContext(UserContext)
+//it was inside below formFields but being uncomment out because firebase Observer pattern
+
 const SignInForm = () =>{
     const [formFields, setFormFields] = useState(defaultFormFields)
     const {email, password} = formFields
 
-    const {setCurrentUser} = useContext(UserContext)
+    
 
     const resetFormFields = () => {
         setFormFields(defaultFormFields)
     }
 
+    // await createUserDocumentFromAuth(user) //was inside signInWithGoogle but move to user.context
+    // const {user} = await signInWithGooglePopup()
     const signInWithGoogle = async () => {
-        const {user} = await signInWithGooglePopup()
-        await createUserDocumentFromAuth(user)
+        await signInWithGooglePopup()
+        // setCurrentUser(user) //it was inside try{} but being uncomment out because firebase Observer pattern
     }
 
     const handleChange = (event) => {
@@ -36,9 +42,10 @@ const SignInForm = () =>{
     const handleSubmit = async (event) => {
         event.preventDefault()
         
+        //setCurrentUser(user) //it was inside try{} but being uncomment out because firebase Observer pattern
         try{
             const {user} = await signInAuthUserWithEmailAndPassword(email,password)
-            setCurrentUser(user)
+            
             resetFormFields()
         }catch(error){
             switch(error.code){

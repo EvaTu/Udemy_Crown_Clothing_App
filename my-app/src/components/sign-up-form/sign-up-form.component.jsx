@@ -1,9 +1,10 @@
-import {useState, useContext} from 'react'
+// import {useState, useContext} from 'react'
+import {useState} from 'react'
 import FormInput from "../form-input/form-input.component"
 import {createAuthUserWithEmailAndPassword, createUserDocumentFromAuth} from "../../utils/firebase/firebase.utils"
 import "./sign-up-form.styles.scss"
 import Button from "../button/button.component"
-import {UserContext} from "../../contexts/user.context"
+// import {UserContext} from "../../contexts/user.context"
 
 
 const defaultFormFields = {
@@ -13,11 +14,13 @@ const defaultFormFields = {
     confirmPassword: ""
 }
 
+//const {setCurrentUser} = useContext(UserContext)
+//it was inside below formFields but being uncomment out because firebase Observer pattern
 
 const SignUpForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields)
     const {displayName, email, password, confirmPassword} = formFields
-    const {setCurrentUser} = useContext(UserContext)
+    
 
     const resetFormFields = () => {
         setFormFields(defaultFormFields)
@@ -35,11 +38,10 @@ const SignUpForm = () => {
             return
         }
 
+        // setCurrentUser(user) //It was inside try{} but being uncomment out because firebase Observer pattern
         try{
             const {user} = await createAuthUserWithEmailAndPassword(email, password)
-            setCurrentUser(user)
             await createUserDocumentFromAuth(user, {displayName})
-
             resetFormFields()
         }catch(error){
             if(error.code === "auth/email-already-in-use"){
